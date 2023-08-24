@@ -1,24 +1,28 @@
 import os
-from PyPDF2 import PdfMerger
+import PyPDF2
 
+def merge_pdfs(input_files, output_file):
+    pdf_merger = PyPDF2.PdfMerger()
 
-def merge_pdfs(input_pdfs, output_pdf):
-    merger = PdfMerger()
+    for pdf_file in input_files:
+        with open(pdf_file, 'rb') as pdf:
+            pdf_merger.append(pdf)
 
-    for pdf in input_pdfs:
-        merger.append(pdf)
+    desktop_path = os.path.expanduser("~/Desktop")
+    output_path = os.path.join(desktop_path, output_file)
 
-    merger.write(output_pdf)
-    merger.close()
+    with open(output_path, 'wb') as output:
+        pdf_merger.write(output)
 
+    print(f"Merged {len(input_files)} PDFs into {output_path}")
 
 if __name__ == "__main__":
     desktop_path = os.path.expanduser("~/Desktop")
 
-    input_files = ["file1.pdf", "file2.pdf", "file3.pdf"]  # Add your input PDF file names here
-    output_file = os.path.join(desktop_path, "merged_output.pdf")  # Output file on the desktop
+    input_files = [
+        os.path.join(desktop_path, '10398897_challan (1).pdf'),
+        os.path.join(desktop_path, '10420276_challan (1).pdf')
+    ]
+    output_file = "merged_output.pdf"
 
-    input_files = [os.path.join(desktop_path, pdf) for pdf in input_files]  # Full paths to input files
     merge_pdfs(input_files, output_file)
-
-    print(f"PDF files merged and saved as '{output_file}'.")
